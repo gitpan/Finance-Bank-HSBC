@@ -1,7 +1,7 @@
 package Finance::Bank::HSBC;
 use strict;
 use Carp;
-our $VERSION = '1.02';
+our $VERSION = '1.03';
 
 use Data::Dumper;
 use WWW::Mechanize;
@@ -118,8 +118,9 @@ Finance::Bank::HSBC - Check your HSBC bank accounts from Perl
 
   use Finance::Bank::HSBC;
   my @accounts = Finance::Bank::HSBC->check_balance(
-      bankingid => "IBxxxxxxxxxx",
-      seccode   => "xxxxxx"
+      bankingid   => "IBxxxxxxxxxx",
+      seccode     => "xxxxxx",
+      dateofbirth => "ddmmyy"
   );
 
   foreach (@accounts) {
@@ -140,7 +141,7 @@ C<WWW::Mechanize> and C<HTML::TokeParser> for screen-scraping.
 
 =head1 CLASS METHODS
 
-    check_balance(bankingid => $u, seccode => $p)
+    check_balance(bankingid => $u, seccode => $p, dateofbirth => $d)
 
 Return an array of account hashes, one for each of your bank accounts.
 
