@@ -1,7 +1,7 @@
 package Finance::Bank::HSBC;
 use strict;
 use Carp;
-our $VERSION = '1.00';
+our $VERSION = '1.01';
 
 use WWW::Mechanize;
 use HTML::TokeParser;
