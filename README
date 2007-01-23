@@ -1,36 +1,190 @@
 NAME
-  Finance::Bank::HSBC - Check your HSBC bank accounts from Perl
+    Finance::Bank::HSBC - Extract HSBC online banking data.
 
 SYNOPSIS
-  use Finance::Bank::HSBC;
-  my @accounts = Finance::Bank::HSBC->check_balance(
-      bankingid => "IBxxxxxxxxxx",
-      seccode   => "xxxxxx"
-  );
+      use Finance::Bank::HSBC;
 
-  foreach (@accounts) {
-      printf "%25s : %13s / %18s : GBP %8.2f\n",
-        $_->{name}, $_->{type}, $_->{account}, $_->{balance};
-  }
+      my @accounts = Finance::Bank::HSBC->extract_details(
+        bankingid               => "IBnnnnnnnnnn",
+        seccode                 => "nnnnnn",
+        dateofbirth             => "DDMMYY",
+        get_statements          => 0, # or 1
+        get_transactions        => 0, # or 1
+
+        # YYYY-MM-DD
+        earliest_statement_date => '2006-08-31',
+
+        # full account number(s) without spaces, as shown in online banking
+        # e.g. sortcodeACCOUNTNUMBER e.g. 987654012345678
+        # can be an array of several or a single value
+        accounts => [ 'nnnnnnnnnnnnnn' ],
+      );
+
+      foreach (@accounts) {
+          printf "%25s : %13s / %18s : GBP %8.2f\n",
+            $_->{name}, $_->{type}, $_->{account}, $_->{balance};
+      }
 
 DESCRIPTION
-  This module provides a rudimentary interface to the HSBC online
-  banking system at https://www.ebank.hsbc.co.uk/. 
+    This module provides a rudimentary interface to the HSBC online banking
+    system at "https://www.ebank.hsbc.co.uk/". It provides the ability to
+    extract account information, transaction history and statements.
 
 DEPENDENCIES
-  You will need either Crypt::SSLeay or IO::Socket::SSL installed 
-  for HTTPS support to work with LWP.  This module also depends on 
-  WWW::Mechanize and HTML::TokeParser for screen-scraping.
+    You will need either "Crypt::SSLeay" or "IO::Socket::SSL" installed for
+    HTTPS support to work with LWP. This module also depends on
+    "WWW::Mechanize" and "HTML::TokeParser" for screen-scraping.
+
+METHODS
+    extract_details(%options)
+      Return an array of account hashes, one for each of your bank accounts.
+      Below is a list of all the options that this method takes.
+
+    generate_qif(\%account)
+      Generate a very basic QIF file from the account information stored in
+      \%account. This method requires that the statement information was
+      extracted for the account data passed in. An example would be:
+
+        my @accounts = Finance::Bank::HSBC->check_balance ( %options );
+
+        foreach ( @accounts )
+        {
+          my $ac = $_->{account};
+          $ac =~ s/[^0-9]+//g;
+
+          open FD, ">" . $ac . ".qif" || die ( "Can't write .qif - ". $@ );
+          print FD Finance::Bank::HSBC->generate_qif ( $_ );
+          close FD;
+        }
+
+    bankingid MANDATORY
+      Your own personal banking ID number. Along the lines of
+      IBnnnnnnnnnnnn.
+
+    seccode MANDATORY
+      The security code assigned to your bank account. Usually a 6 digit
+      number, though we support upto 9 digits.
+
+    dateofbirth MANDATORY
+      Your date of birth, in the format DDMMYY.
+
+    get_statements OPTIONAL
+      Defaults to 0. Whether or not the script should extract statement
+      information for the accounts that are being processed.
+
+    get_transactions OPTIONAL
+      Defaults to 0. Whether or not the script should extract recent
+      transaction information for the accounts that are being processed.
+
+    earliest_statement_date OPTIONAL
+      When defined the script will extract data from every statement that
+      has a "statement date" of at least "earliest_statement_date".
+
+    accounts OPTIONAL
+      A single value, or array reference, of account numbers that should be
+      processed. Only account numbers that are found will be processed, for
+      obvious reasons. If this option is not present then all accounts that
+      are listed on the main account overview page will have their details
+      extracted.
+
+ACCOUNT HASH DATA
+    The data returned is an array reference of hashes. Each of these hashes
+    contains information about a particular account, explained below.
+
+    name
+      Name of the account, e.g. "MR M WILSON".
+
+    type
+      Type of the account, e.g. "STUDENT A/C".
+
+    account
+      Account number, as it appears in online banking, i.e. "SORTCODE
+      ACCOUNT_NUMBER".
+
+    balance
+      The current balance of the account, e.g. "123.45" or "-1.23".
+
+    transactions
+      The transaction key contains an array reference full of hash
+      references - one for each transaction in the account's recent history.
+      The transactions are stored from new to old.
+
+      date
+        The date of the transaction, e.g. "JAN 02"
+
+      type
+        The type of the transaction, e.g. "DD".
+
+      desc
+        The description associated with the transaction, e.g. "NSPCC".
+
+      paidin
+        The amount paid in during this transaction, which may be "", e.g.
+        "10.00".
+
+      paidout
+        The amount paid out during this transaction, which may be "", e.g.
+        "10.00".
+
+      balance
+        The account balance after this transaction occured, which may not be
+        present, e.g. "12.00".
+
+    statements
+      The statement key contains a hash reference, where each key is the
+      date which a statement was issued (YYYY-MM-DD), and each value is an
+      array reference which contains hash references - one for each
+      statement entry extracted. The statement entries are stored from new
+      to old.
+
+      date
+        The date of the transaction, e.g. "JAN 02"
+
+      type
+        The type of the transaction, e.g. "DD".
+
+      desc
+        The description associated with the transaction, e.g. "NSPCC".
+
+      paidin
+        The amount paid in during this transaction, which may be "", e.g.
+        "10.00".
+
+      paidout
+        The amount paid out during this transaction, which may be "", e.g.
+        "10.00".
+
+      balance
+        The account balance after this transaction occured, which may not be
+        present, e.g. "12.00".
+
+SEE ALSO
+    Finance::Bank::LloydsTSB
+      This module was used a base for the original version of this module.
+      See "THANKS", below.
 
 WARNING
-  This warning is from Simon Cozens' Finance::Bank::LloydsTSB, and seems
-  just as apt here.
+    This warning is from Simon Cozens' "Finance::Bank::LloydsTSB", and seems
+    just as apt here.
 
-  This is code for <online banking>, and that means <your money>, and
-  that means <BE CAREFUL>. You are encouraged, nay, expected, to audit
-  the source of this module yourself to reassure yourself that I am not
-  doing anything untoward with your banking data. This software is useful
-  to me, but is provided under <NO GUARANTEE>, explicit or implied.
+    This is code for online banking, and that means your money, and that
+    means BE CAREFUL. You are encouraged, nay, expected, to audit the source
+    of this module yourself to reassure yourself that I am not doing
+    anything untoward with your banking data. This software is useful to me,
+    but is provided under NO GUARANTEE, explicit or implied.
+
+THANKS
+    Simon Cozens for Finance::Bank::LloydsTSB, upon which most of the
+    original code was based, Andy Lester (and Skud, by continuation) for
+    WWW::Mechanize, Gisle Aas for HTML::TokeParser, Leon Cowle for updated
+    login code after HSBC changed their HTML the first time.
+
+    A special thanks to Real Programmers Ltd <http://realprogrammers.com/>
+    for sponsoring development of the script in order to bring it up to date
+    (22/01/2007).
 
 AUTHOR
-  Chris Ball <chris@cpan.org>
+    Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>.
+
+    Original version by Chris Ball "chris@cpan.org".
+
