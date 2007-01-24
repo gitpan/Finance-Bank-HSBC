@@ -1,3 +1,9 @@
+1.05 - 24/01/2007 - Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>
+
+  * added check_balance synonym "extract_details"
+  * updated POD to reflect this fact, and stop telling people to use
+    extract_details when it didn't exist
+
 1.04 - 22/01/2007 - Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>
 
   * updated module with new starting URL.

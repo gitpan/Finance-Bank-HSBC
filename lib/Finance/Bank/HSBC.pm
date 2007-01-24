@@ -2,7 +2,7 @@ package Finance::Bank::HSBC;
 
 use vars qw($VERSION);
 
-$VERSION = '1.04';
+$VERSION = '1.05';
 
 use strict;
 use warnings;
@@ -89,6 +89,13 @@ sub generate_qif
     }
 
     return $qif;
+}
+
+# extract_details was listed as the new method name, but for historical
+# reasons it's left as check_balance
+sub extract_details
+{
+    &check_balance;
 }
 
 sub check_balance
@@ -367,7 +374,7 @@ Finance::Bank::HSBC - Extract HSBC online banking data.
 
   use Finance::Bank::HSBC;
 
-  my @accounts = Finance::Bank::HSBC->extract_details(
+  my @accounts = Finance::Bank::HSBC->check_balance(
     bankingid               => "IBnnnnnnnnnn",
     seccode                 => "nnnnnn",
     dateofbirth             => "DDMMYY",
@@ -404,10 +411,14 @@ C<WWW::Mechanize> and C<HTML::TokeParser> for screen-scraping.
 
 =over 2
 
-=item extract_details(%options)
+=item check_balance(%options)
 
 Return an array of account hashes, one for each of your bank accounts. Below
 is a list of all the options that this method takes.
+
+=item extract_details(%options)
+
+A synonym for check_balance.
 
 =item generate_qif(\%account)
 
