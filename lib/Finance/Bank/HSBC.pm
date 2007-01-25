@@ -2,7 +2,7 @@ package Finance::Bank::HSBC;
 
 use vars qw($VERSION);
 
-$VERSION = '1.05';
+$VERSION = '1.06';
 
 use strict;
 use warnings;
@@ -138,7 +138,7 @@ sub check_balance
     my %digitnames = map { $_ => $t++ } @digitnames;
 
     # it's possible they used "LAST"
-    $digit3 = $digitnames [ length ( $opts{seccode} ) - 2 ]
+    $digit3 = $digitnames [ length ( $opts{seccode} ) - 1 ]
         if $digit3 eq 'LAST';
 
     my $seccodedigits = '';
