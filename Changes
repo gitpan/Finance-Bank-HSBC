@@ -1,33 +1,4 @@
-1.06 - 25/01/2007 - Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>
-
-  * under caffeinated coding is a bad thing during the wee hours - the last
-    character in a string is:
-      my @s = split //, $string;
-      my $c = $s [ length ( $string ) - 1 ];
-    not!
-      my $c = $s [ length ( $string ) - 2 ];
-
-1.05 - 24/01/2007 - Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>
-
-  * added check_balance synonym "extract_details"
-  * updated POD to reflect this fact, and stop telling people to use
-    extract_details when it didn't exist
-
-1.04 - 22/01/2007 - Matt Wilson <matt _at_ mattsscripts _dot_ co _dot_ uk>
-
-  * updated module with new starting URL.
-  * rewrote WWW::Mechanize code to use updated API, rather than deprecated
-    ->follow(n).
-  * module wasn't navigating online banking correctly, fixed.
-  * extended POD with some helpful information.
-  * added functionality to extract statement data.
-  * added functionality to extract recent transaction history.
-  * rewrote data extraction routines to use a RE, which seems more stable.
-  * rewrote page navigation and security handling code for cleanliness.
-  * added generate_qif function to generate basic QIF files.
-
------- 8< ------ 8< ------ 8< ------ 8< ------
-
+1.04: Updated for latest HSBC webiste changes (now uses HTML::Tabel Extract) - Ian Bissett
 1.03: Documentation updates.
 1.02: Adapted to new HSBC HTML.
 1.01: Upload included Makefile / blib / etc.  Oops.
