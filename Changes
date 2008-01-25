@@ -1,4 +1,5 @@
-1.04: Updated for latest HSBC webiste changes (now uses HTML::Tabel Extract) - Ian Bissett
+1.05: Fixed build problem - Ian Bissett
+1.04: Updated for latest HSBC webiste changes (now uses HTML::Table Extract) - Ian Bissett
 1.03: Documentation updates.
 1.02: Adapted to new HSBC HTML.
 1.01: Upload included Makefile / blib / etc.  Oops.

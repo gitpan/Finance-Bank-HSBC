@@ -1,7 +1,7 @@
 package Finance::Bank::HSBC;
 use strict;
 use Carp;
-our $VERSION = '1.04';
+our $VERSION = '1.05';
 
 use WWW::Mechanize;
 use HTML::TableExtract;
@@ -56,7 +56,7 @@ sub check_balance {
     foreach my $digit (@seccodedigits_req) {
 	# Use digit from %word2digit as the index for the substring. this gives
 	# us the required digit to append to the response
-        $seccodedigits .= substr($opts{'seccode'}, $word2digit{$digit} - 1, 1);;
+        $seccodedigits .= substr($opts{'seccode'}, $word2digit{$digit} - 1, 1);
     }
 	
     # Fill in and submit the security questions form

@@ -5,5 +5,5 @@ WriteMakefile(
     'NAME'		    => 'Finance::Bank::HSBC',
     'VERSION_FROM'	=> 'HSBC.pm', # finds $VERSION
     'AUTHOR'        => 'Chris Ball <chris@cpan.org>', 
-    'PREREQ_PM'		=> { WWW::Mechanize => 0, HTML::TokeParser => 0 }
+    'PREREQ_PM'		=> { WWW::Mechanize => 1.18, HTML::TableExtract => 0 }
 );
